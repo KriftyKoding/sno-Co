@@ -1,0 +1,45 @@
+html {
+    background-color: indianred;
+    color: black;
+    font-size: 16x;
+}
+
+#game-container {    
+    width: 90vw;
+    height: 40vw;
+    border: 5px solid pink;
+    position: relative;
+    /* display: flex;
+    justify-content: center;
+    align-items: center; */
+}
+
+#moving-truck {
+    width: 50%;
+    height: 100%;
+    background-color: blue;
+    position: absolute;
+    top: 0%;
+    left: 50%;
+    /* transform: translate(-100%, -50%);     */
+}
+
+#item-storage {
+    width: 20%;
+    height: 50%;
+    border: 5px solid red;
+    position: absolute;
+    top: 25%;
+    left: 0%;
+    /* transform: translate(-0%, -50%); */
+   
+}
+
+.couch {
+    width: 10%;
+    height: 15%;
+    background-color: black;
+    position: absolute;
+    top: 25%;
+    left: 0%;
+}
