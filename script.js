@@ -62,7 +62,7 @@ console.log(currentObject.style.top);
 //////////Keydown event listener
 ///////////////////////////////////////////////////////////////////////////////////
 document.addEventListener('keydown', function(e) {
-    console.log(e.key);
+    // console.log(e.key);
     switch (e.key) {
         case 'ArrowLeft':
             listenArrowLeft ();
@@ -87,12 +87,28 @@ document.addEventListener('keydown', function(e) {
     }
 });
             
-function listenArrowLeft () {console.log("left");}
+function listenArrowLeft () {
+    if (parseInt(currentObject.style.left) > 0 ) {
+        currentObject.style.left = `${parseInt(currentObject.style.left) - 1}%`;
+    } 
+}
+
 function listenArrowRight () {
     let objectRightSide = parseInt(currentObject.style.width) + parseInt(currentObject.style.left); 
     if (objectRightSide < 100 ) {
         currentObject.style.left = `${parseInt(currentObject.style.left) +1}%`;
     } 
 }
-function listenArrowUp () {console.log("up");}
-function listenArrowDown () {console.log("down");}
+
+function listenArrowUp () {
+    if (parseInt(currentObject.style.top) > 0 ) {
+        currentObject.style.top = `${parseInt(currentObject.style.top) - 1}%`;
+    } 
+}
+
+function listenArrowDown () {
+    let objectBottomtSide = parseInt(currentObject.style.height) + parseInt(currentObject.style.top); 
+    if (objectBottomtSide < 100 ) {
+        currentObject.style.top = `${parseInt(currentObject.style.top) +1}%`;
+    } 
+}
