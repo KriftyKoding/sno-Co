@@ -3,7 +3,7 @@ let currentObject
 
 class furniture {
 
-    constructor (name, width = "5%", height = "5%", background = "black", top = "0%", left = "0%", furnitureExsist = false) {
+    constructor (name, width = "5%", height = "5%", background = "black", top = "50%", left = "0%", furnitureExsist = false) {
         this.name = name;
         this.width = width;
         this.height = height;
@@ -16,7 +16,7 @@ class furniture {
 
     createFurniture() {
         if (this.furnitureExsist == false) {
-            this.furnitureExsist = true;
+            // this.furnitureExsist = true;
             const furnitureElement = document.createElement('div');
             furnitureElement.classList.add('furniture');
             furnitureElement.style.width = this.width;
@@ -42,6 +42,12 @@ movingTruck.createFurniture();
 let couch = new furniture ("couch", "10%", "10%", "brown", "30%", "30%");
 couch.createFurniture();
 console.log(currentObject.style.top);
+
+
+//potential objects
+let long = new furniture ("couch", "30%", "10%", "black");
+let square = new furniture ("couch", "20%", "20%", "blueviolet");
+let high = new furniture ("couch", "10%", "30%", "cornsilk");
 
 
 
@@ -121,6 +127,6 @@ function rightWallCollision () {
     if (objectRightSide < 100 ) {
         currentObject.style.left = `${parseInt(currentObject.style.left) +1}%`;
     } else {
-        console.log("at edge");
+        long.createFurniture();
     }
 }
