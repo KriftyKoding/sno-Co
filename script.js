@@ -94,10 +94,7 @@ function listenArrowLeft () {
 }
 
 function listenArrowRight () {
-    let objectRightSide = parseInt(currentObject.style.width) + parseInt(currentObject.style.left); 
-    if (objectRightSide < 100 ) {
-        currentObject.style.left = `${parseInt(currentObject.style.left) +1}%`;
-    } 
+    rightWallCollision ();
 }
 
 function listenArrowUp () {
@@ -111,4 +108,19 @@ function listenArrowDown () {
     if (objectBottomtSide < 100 ) {
         currentObject.style.top = `${parseInt(currentObject.style.top) +1}%`;
     } 
+}
+
+setInterval(function(){
+    
+    rightWallCollision ();
+
+}, 1000)
+
+function rightWallCollision () {
+    let objectRightSide = parseInt(currentObject.style.width) + parseInt(currentObject.style.left); 
+    if (objectRightSide < 100 ) {
+        currentObject.style.left = `${parseInt(currentObject.style.left) +1}%`;
+    } else {
+        console.log("at edge");
+    }
 }
