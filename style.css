@@ -14,15 +14,6 @@ html {
     align-items: center; */
 }
 
-#moving-truck {
-    width: 50%;
-    height: 100%;
-    background-color: blue;
-    position: absolute;
-    top: 0%;
-    left: 50%;
-    /* transform: translate(-100%, -50%);     */
-}
 
 #item-storage {
     width: 20%;
@@ -35,11 +26,6 @@ html {
    
 }
 
-.couch {
-    width: 10%;
-    height: 15%;
-    background-color: black;
+.furniture {
     position: absolute;
-    top: 25%;
-    left: 0%;
 }
