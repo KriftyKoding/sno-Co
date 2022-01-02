@@ -89,14 +89,10 @@ document.addEventListener('keydown', function(e) {
             
 function listenArrowLeft () {console.log("left");}
 function listenArrowRight () {
-    let objectLeftLocation = currentObject.style.left;
-    if (objectLeftLocation == "") {
-        currentObject.style.left = "1%"
-    } else if (objectLeftLocation.includes("%")) {
-        currentObject.style.left = `${parseInt(objectLeftLocation) +1}%`;
-    } else {
-        console.error("couch.style.left unexpect results");
-    }
+    let objectRightSide = parseInt(currentObject.style.width) + parseInt(currentObject.style.left); 
+    if (objectRightSide < 100 ) {
+        currentObject.style.left = `${parseInt(currentObject.style.left) +1}%`;
+    } 
 }
 function listenArrowUp () {console.log("up");}
 function listenArrowDown () {console.log("down");}
