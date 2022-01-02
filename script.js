@@ -1,6 +1,11 @@
 const itemStorage = document.getElementById("game-container")
 
 
+
+
+
+
+
 //couch object
 const couch = document.createElement('div');
 couch.classList.add('couch');
@@ -10,8 +15,9 @@ let currentObject = couch
 
 //how to move couch over
 couch.style.top = "45%";
-
-//Keydown event listener
+///////////////////////////////////////////////////////////////////////////////////
+//////////Keydown event listener
+///////////////////////////////////////////////////////////////////////////////////
 document.addEventListener('keydown', function(e) {
     
     switch (e.key) {
@@ -31,6 +37,15 @@ document.addEventListener('keydown', function(e) {
 });
             
 function listenArrowLeft () {console.log("left");}
-function listenArrowRight () {console.log("right");}
+function listenArrowRight () {
+    let objectLeftLocation = couch.style.left;
+    if (objectLeftLocation == "") {
+        couch.style.left = "1%"
+    } else if (objectLeftLocation.includes("%")) {
+        couch.style.left = `${parseInt(objectLeftLocation) +1}%`;
+    } else {
+        console.error("couch.style.left unexpect results");
+    }
+}
 function listenArrowUp () {console.log("up");}
 function listenArrowDown () {console.log("down");}
