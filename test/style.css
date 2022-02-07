@@ -2,6 +2,10 @@
     grid-gap: 1px;
 }
 
-.grid div {
+.gridSquare {
     background-color: green;
+}
+
+.red {
+    background-color: red;
 }
