@@ -85,8 +85,6 @@ function newShape(object) {
 ////////////////////////////////////////////////////
 ///////////////////////////////////////////////////
 
-let startingSquare = squares[0];
-
 function draw(object) {
   object.layout.forEach((value, index) => {
     if (value === 0) {
@@ -107,14 +105,34 @@ newShape(zShape);
 function undraw(object) {
   object.layout.forEach((value, index) => {
     let gridRowAdjust = Math.round((index - 1) / object.size) * gridRow;
-      let shapeRowAdjust = Math.floor(index / object.size) * object.size;
-      let indexAdjust =
-        gridRowAdjust + index - shapeRowAdjust + object.firstTile;
-      squares[indexAdjust].classList.remove("red");
-      console.log(squares[indexAdjust]);
-  })
+    let shapeRowAdjust = Math.floor(index / object.size) * object.size;
+    let indexAdjust = gridRowAdjust + index - shapeRowAdjust + object.firstTile;
+    squares[indexAdjust].classList.remove("red");
+    console.log(squares[indexAdjust]);
+  });
 }
 
 // undraw(zShape);
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////
 
+//keyListener
+function control(e) {
+  // console.log(e.key);
+  if (e.key === "ArrowLeft") {
+    // roate();
+  } else if (e.key === "ArrowUp") {
+    // moveRight();
+  } else if (e.key === "ArrowRight") {
+    // moveRight();
+  } else if (e.key === "ArrowDown") {
+    // moveDown();
+  } else if (e.key === " ") {
+    // pause();enter
+    console.log("ente");
+  } else if (e.key === "Enter") {
+    // enter()
+  }
+}
+document.addEventListener("keydown", control);
