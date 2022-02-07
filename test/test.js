@@ -95,7 +95,7 @@ function draw(object) {
       let shapeRowAdjust = Math.floor(index / object.size) * object.size;
       let indexAdjust =
         gridRowAdjust + index - shapeRowAdjust + object.firstTile;
-      squares[indexAdjust].classList = "red";
+      squares[indexAdjust].classList.add("red");
     } else {
       console.error("layout unexpected, can not draw");
     }
@@ -103,3 +103,18 @@ function draw(object) {
 }
 
 newShape(zShape);
+
+function undraw(object) {
+  object.layout.forEach((value, index) => {
+    let gridRowAdjust = Math.round((index - 1) / object.size) * gridRow;
+      let shapeRowAdjust = Math.floor(index / object.size) * object.size;
+      let indexAdjust =
+        gridRowAdjust + index - shapeRowAdjust + object.firstTile;
+      squares[indexAdjust].classList.remove("red");
+      console.log(squares[indexAdjust]);
+  })
+}
+
+// undraw(zShape);
+
+
