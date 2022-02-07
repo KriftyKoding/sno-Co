@@ -39,29 +39,39 @@ class Shape {
   }
 }
 
-const lShape = new Shape(3, [0, 1, 0, 0, 1, 0, 0, 1, 1]);
 
-let size = 4;
-let layout = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
-let rotation = 2;
+const lShape = new Shape(3, [0, 1, 0, 0, 1, 0, 0, 1, 1]);
+const lBackwardsShape = new Shape(3, [0,1,0,0,1,0,1,1,0]);
+const sShape = new Shape(3, [0,1,1,1,1,0,0,0,0]);
+const zShape = new Shape(3, [1,1,0,0,1,1,0,0,0]);
+const tShape = new Shape(3, [0,0,0,1,1,1,0,1,0]);
+const squaereShape = new Shape(2, [1,1,1,1]);
+const singleShape = new Shape(4, [0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0]);
+const lineShape = new Shape(1, [1]);
+//holder of rotation calculations
 let displayLayout = [];
 
-function rotaion() {
-    for (let i = 0; i < size; i++) { 
-        for (let j = size - 1; j >= 0; j--) {
-            displayLayout.push(layout[size * (j) + i])
-         }
+function rotaion(e) {
+  if (!(e.size*e.size == e.layout.length)) {
+    console.error("shape size and length do not match. Can not roatate");
+    
+  } else {
+    for (let i = 0; i < e.size; i++) { 
+      for (let j = e.size - 1; j >= 0; j--) {
+        displayLayout.push(e.layout[e.size * (j) + i])
+      }
     }
-    layout = displayLayout
+    e.layout = displayLayout
     displayLayout = []
-    console.log(layout);
+    console.log(e.layout);
+  }
   }
 
-  rotaion();
-  rotaion();
-  rotaion();
-  rotaion();
-  rotaion();
+  rotaion(singleShape);
+  rotaion(singleShape);
+  rotaion(singleShape);
+  rotaion(singleShape);
+  rotaion(singleShape);
 
 
 
