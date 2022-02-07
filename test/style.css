@@ -1,0 +1,7 @@
+.grid {
+    grid-gap: 1px;
+}
+
+.grid div {
+    background-color: green;
+}
