@@ -26,6 +26,7 @@ function createGrid() {
     girdDiv.style.width = squareSize;
     girdDiv.style.height = squareSize;
     girdDiv.classList = "gridSquare";
+    girdDiv.id = i;
     grid.appendChild(girdDiv);
     squares.push(girdDiv);
   }
@@ -69,7 +70,7 @@ function rotaion(e) {
       }
     }
     e.layout = displayLayout;
-    console.log(e.layout);
+    // console.log(e.layout);
   }
 }
 
@@ -108,7 +109,7 @@ function undraw(object) {
   object.layout.forEach((value, index) => {
     let indexAdjust = calcPosition(index, object);
     squares[indexAdjust].classList.remove("red");
-    console.log(squares[indexAdjust]);
+    // console.log(squares[indexAdjust]);
   });
 }
 
@@ -165,11 +166,60 @@ function moveLeft() {
 }
 
 function move(num) {
-  undraw(currentObject);
-  currentObject.firstTile = currentObject.firstTile + num;
-  draw(currentObject);
+  console.log('wall-----', wallHitCheck(currentObject, num));
+  if (wallHitCheck(currentObject, num)) {
+    console.log("stop");
+  } else {
+    undraw(currentObject);
+    currentObject.firstTile = currentObject.firstTile + num;
+    draw(currentObject);
+  }
 }
 
 function moveRotate() {
   console.log("moveRotate");
+}
+
+//check hit walls
+function wallHitCheck(object, num) {
+ //true == hit
+ let wallHit = false;
+  if (num === 1 ) {
+    object.layout.forEach((value, index) => {
+      if (value === 0) {
+      } else if (value === 1) {
+        let indexAdjust = calcPosition(index, object);
+        for (let i = 0; i < gridColumn * gridRow; i = i + gridRow) {
+          if (((i) === (indexAdjust + 1))){
+            wallHit = true
+            break;
+          }
+        }
+      } else {
+        console.error("layout unexpected detect hit");
+      }
+    });
+
+  } else if (num === -1) {
+    object.layout.forEach((value, index) => {
+      if (value === 0) {
+      } else if (value === 1) {
+        let indexAdjust = calcPosition(index, object);
+        for (let i = 0; i < gridColumn * gridRow; i = i + gridRow) {
+          if ((i === indexAdjust)) {
+            wallHit = true
+            break;
+          } 
+        }
+      } else {
+        console.error("layout unexpected detect hit");
+      }
+    });
+
+  }else if (num === gridRow || num === -gridRow) {
+    console.log("move up or down");
+  } else {
+    console.error("unexpected movement calculation");
+  }
+  return wallHit;
 }
