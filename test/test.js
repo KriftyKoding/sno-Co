@@ -2,7 +2,8 @@ const domBody = document.body;
 let squares = [];
 let gridRow = 20;
 let gridColumn = 10;
-let startingDiv = gridRow / 2;
+let startingDiv = gridRow / 2 + (gridColumn / 2) * 20;
+let currentObject;
 
 function createGrid() {
   //Grid Specifications
@@ -77,8 +78,12 @@ function rotaion(e) {
 ////////////////////////////////////////////////////
 
 function newShape(object) {
-  object.firstTile = startingDiv - Math.floor(object.size / 2);
+  object.firstTile =
+    startingDiv -
+    Math.ceil(object.size / 2) -
+    Math.ceil(object.size / 2) * gridRow;
   draw(object);
+  currentObject = object;
 }
 
 ////////////////////////////////////////////////////
@@ -89,10 +94,7 @@ function draw(object) {
   object.layout.forEach((value, index) => {
     if (value === 0) {
     } else if (value === 1) {
-      let gridRowAdjust = Math.round((index - 1) / object.size) * gridRow;
-      let shapeRowAdjust = Math.floor(index / object.size) * object.size;
-      let indexAdjust =
-        gridRowAdjust + index - shapeRowAdjust + object.firstTile;
+      let indexAdjust = calcPosition(index, object);
       squares[indexAdjust].classList.add("red");
     } else {
       console.error("layout unexpected, can not draw");
@@ -104,12 +106,17 @@ newShape(zShape);
 
 function undraw(object) {
   object.layout.forEach((value, index) => {
-    let gridRowAdjust = Math.round((index - 1) / object.size) * gridRow;
-    let shapeRowAdjust = Math.floor(index / object.size) * object.size;
-    let indexAdjust = gridRowAdjust + index - shapeRowAdjust + object.firstTile;
+    let indexAdjust = calcPosition(index, object);
     squares[indexAdjust].classList.remove("red");
     console.log(squares[indexAdjust]);
   });
+}
+
+function calcPosition(index, object) {
+  let gridRowAdjust = Math.round((index - 1) / object.size) * gridRow;
+  let shapeRowAdjust = Math.floor(index / object.size) * object.size;
+  let indexAdjust = gridRowAdjust + index - shapeRowAdjust + object.firstTile;
+  return indexAdjust;
 }
 
 // undraw(zShape);
@@ -121,13 +128,13 @@ function undraw(object) {
 function control(e) {
   // console.log(e.key);
   if (e.key === "ArrowLeft") {
-    // roate();
+    moveLeft();
   } else if (e.key === "ArrowUp") {
-    // moveRight();
+    moveUp();
   } else if (e.key === "ArrowRight") {
-    // moveRight();
+    moveRight();
   } else if (e.key === "ArrowDown") {
-    // moveDown();
+    moveDown();
   } else if (e.key === " ") {
     // pause();enter
     console.log("ente");
@@ -136,3 +143,33 @@ function control(e) {
   }
 }
 document.addEventListener("keydown", control);
+
+/////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////
+
+function moveUp() {
+  move(-gridRow);
+}
+
+function moveDown() {
+  move(gridRow);
+}
+
+function moveRight() {
+  move(1);
+}
+
+function moveLeft() {
+  move(-1);
+}
+
+function move(num) {
+  undraw(currentObject);
+  currentObject.firstTile = currentObject.firstTile + num;
+  draw(currentObject);
+}
+
+function moveRotate() {
+  console.log("moveRotate");
+}
