@@ -70,7 +70,6 @@ function rotaion(e) {
       }
     }
     e.layout = displayLayout;
-    // console.log(e.layout);
   }
 }
 
@@ -170,7 +169,6 @@ function moveLeft() {
 }
 
 function move(num) {
-  console.log("wall-----", wallHitCheck(currentObject, num));
   if (wallHitCheck(currentObject, num)) {
   } else {
     undraw(currentObject);
@@ -192,7 +190,7 @@ function wallHitCheck(object, num) {
       if (value === 0) {
       } else if (value === 1) {
         let indexAdjust = calcPosition(index, object);
-        for (let i = 0; i < gridColumn * gridRow; i = i + gridRow) {
+        for (let i = 0; i <= gridColumn * gridRow; i = i + gridRow) {
           if (i === indexAdjust + 1) {
             wallHit = true;
             break;
@@ -237,7 +235,7 @@ function wallHitCheck(object, num) {
       if (value === 0) {
       } else if (value === 1) {
         let indexAdjust = calcPosition(index, object);
-        for (let i = 0; i < gridColumn; i++) {
+        for (let i = 0; i < gridRow; i++) {
           if (i === indexAdjust) {
             wallHit = true;
             break;
