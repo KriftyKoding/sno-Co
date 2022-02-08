@@ -2,6 +2,7 @@ const domBody = document.body;
 let squares = [];
 let gridRow = 20;
 let gridColumn = 10;
+// starting point doesn't work but is just for testing
 let startingDiv = gridRow / 2 + (gridColumn / 2) * 20;
 let currentObject;
 
@@ -60,6 +61,7 @@ const lineShape = new Shape(1, [1]);
 ////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////
 function rotaion(e) {
+  console.log("r");
   let displayLayout = [];
   if (!(e.size * e.size == e.layout.length)) {
     console.error("shape size and length do not match. Can not roatate");
@@ -69,7 +71,9 @@ function rotaion(e) {
         displayLayout.push(e.layout[e.size * j + i]);
       }
     }
+    undraw(e)
     e.layout = displayLayout;
+    draw(e)
   }
 }
 
@@ -139,6 +143,8 @@ function control(e) {
     moveRight();
   } else if (e.key === "ArrowDown") {
     moveDown();
+  } else if (e.key === "r" || e.key === "R") {
+    rotaion(currentObject);
   } else if (e.key === " ") {
     // pause();enter
     console.log("ente");
@@ -220,7 +226,11 @@ function wallHitCheck(object, num) {
       if (value === 0) {
       } else if (value === 1) {
         let indexAdjust = calcPosition(index, object);
-        for (let i = gridColumn* gridRow - 1; i > gridColumn* gridRow - gridRow -1; i--) {
+        for (
+          let i = gridColumn * gridRow - 1;
+          i > gridColumn * gridRow - gridRow - 1;
+          i--
+        ) {
           if (i === indexAdjust) {
             wallHit = true;
             break;
@@ -245,8 +255,6 @@ function wallHitCheck(object, num) {
         console.error("layout unexpected detect hit");
       }
     });
-
-
   } else {
     console.error("unexpected movement calculation");
   }
