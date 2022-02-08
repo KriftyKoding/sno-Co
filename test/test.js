@@ -192,20 +192,8 @@ function wallHitCheck(object, num) {
   //true == hit
   let wallHit = false;
   if (num === 1) {
-    object.layout.forEach((value, index) => {
-      if (value === 0) {
-      } else if (value === 1) {
-        let indexAdjust = calcPosition(index, object);
-        for (let i = 0; i <= gridColumn * gridRow; i = i + gridRow) {
-          if (i === indexAdjust + 1) {
-            wallHit = true;
-            break;
-          }
-        }
-      } else {
-        console.error("layout unexpected detect hit");
-      }
-    });
+    let parametors = [(-1), (gridColumn * gridRow), (gridRow)];
+    wallHit = shapeGridTaken(moveForLoop, parametors);
   } else if (num === -1) {
     object.layout.forEach((value, index) => {
       if (value === 0) {
@@ -222,14 +210,15 @@ function wallHitCheck(object, num) {
       }
     });
   } else if (num === gridRow) {
+    //down
     object.layout.forEach((value, index) => {
       if (value === 0) {
       } else if (value === 1) {
         let indexAdjust = calcPosition(index, object);
         for (
-          let i = gridColumn * gridRow - 1;
-          i > gridColumn * gridRow - gridRow - 1;
-          i--
+          let i = gridColumn * gridRow - gridRow;
+          i < gridColumn * gridRow - 1;
+          i++
         ) {
           if (i === indexAdjust) {
             wallHit = true;
@@ -260,3 +249,47 @@ function wallHitCheck(object, num) {
   }
   return wallHit;
 }
+
+
+function shapeGridTaken(func, parametors) {
+  let wallHit = false;
+  currentObject.layout.forEach((value, index) => {
+    if (value === 0) {
+    } else if (value === 1) {
+      let indexAdjust = calcPosition(index, currentObject);
+      wallHit = func(indexAdjust, parametors);
+      console.log("1---" + wallHit);
+    } else {
+      console.error("layout unexpected detect hit");
+    }
+  });
+  return wallHit;
+}
+function moveForLoop(indexAdjust, para) {
+  let wallHit = false;
+  for (let i = para[0]; i < para[1]; i = i + para[2]) {
+    if (i === indexAdjust) {
+      wallHit = true;
+      break;
+    }
+  }
+  // console.log(wallHit);
+  return wallHit;
+}
+
+
+// function test(e, g) {
+//   console.log(e + "gdsg");
+//   console.log(g);
+// }
+
+// let o = [1,2]
+ 
+// shapeGridTaken (test, o)
+
+
+///////////////////////
+/////////////////////
+////////////////////////
+
+
