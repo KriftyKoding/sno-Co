@@ -71,9 +71,9 @@ function rotaion(e) {
         displayLayout.push(e.layout[e.size * j + i]);
       }
     }
-    undraw(e)
+    undraw(e);
     e.layout = displayLayout;
-    draw(e)
+    draw(e);
   }
 }
 
@@ -192,73 +192,32 @@ function wallHitCheck(object, num) {
   //true == hit
   let wallHit = false;
   if (num === 1) {
-    let parametors = [(-1), (gridColumn * gridRow), (gridRow)];
+    let parametors = [-1, gridColumn * gridRow, gridRow];
     wallHit = shapeGridTaken(moveForLoop, parametors);
   } else if (num === -1) {
-    object.layout.forEach((value, index) => {
-      if (value === 0) {
-      } else if (value === 1) {
-        let indexAdjust = calcPosition(index, object);
-        for (let i = 0; i < gridColumn * gridRow; i = i + gridRow) {
-          if (i === indexAdjust) {
-            wallHit = true;
-            break;
-          }
-        }
-      } else {
-        console.error("layout unexpected detect hit");
-      }
-    });
+    let parametors = [(0), (gridColumn * gridRow), (gridRow)];
+    wallHit = shapeGridTaken(moveForLoop, parametors);
   } else if (num === gridRow) {
-    //down
-    object.layout.forEach((value, index) => {
-      if (value === 0) {
-      } else if (value === 1) {
-        let indexAdjust = calcPosition(index, object);
-        for (
-          let i = gridColumn * gridRow - gridRow;
-          i < gridColumn * gridRow - 1;
-          i++
-        ) {
-          if (i === indexAdjust) {
-            wallHit = true;
-            break;
-          }
-        }
-      } else {
-        console.error("layout unexpected detect hit");
-      }
-    });
+    let parametors = [(gridColumn * gridRow - gridRow), (gridColumn * gridRow - 1), (1)];
+    wallHit = shapeGridTaken(moveForLoop, parametors);
   } else if (num === -gridRow) {
-    object.layout.forEach((value, index) => {
-      if (value === 0) {
-      } else if (value === 1) {
-        let indexAdjust = calcPosition(index, object);
-        for (let i = 0; i < gridRow; i++) {
-          if (i === indexAdjust) {
-            wallHit = true;
-            break;
-          }
-        }
-      } else {
-        console.error("layout unexpected detect hit");
-      }
-    });
+    let parametors = [(0), (gridRow), (1)];
+    wallHit = shapeGridTaken(moveForLoop, parametors, object);
   } else {
     console.error("unexpected movement calculation");
   }
   return wallHit;
 }
 
-
-function shapeGridTaken(func, parametors) {
+function shapeGridTaken(func, parametors, object) {
   let wallHit = false;
-  currentObject.layout.forEach((value, index) => {
+  currentObject.layout.some((value, index) => {
     if (value === 0) {
     } else if (value === 1) {
       let indexAdjust = calcPosition(index, currentObject);
+      // console.log(indexAdjust);
       wallHit = func(indexAdjust, parametors);
-      console.log("1---" + wallHit);
+      return wallHit
     } else {
       console.error("layout unexpected detect hit");
     }
@@ -269,6 +228,7 @@ function moveForLoop(indexAdjust, para) {
   let wallHit = false;
   for (let i = para[0]; i < para[1]; i = i + para[2]) {
     if (i === indexAdjust) {
+      // console.log('wallhit');
       wallHit = true;
       break;
     }
@@ -277,19 +237,15 @@ function moveForLoop(indexAdjust, para) {
   return wallHit;
 }
 
-
 // function test(e, g) {
 //   console.log(e + "gdsg");
 //   console.log(g);
 // }
 
 // let o = [1,2]
- 
-// shapeGridTaken (test, o)
 
+// shapeGridTaken (test, o)
 
 ///////////////////////
 /////////////////////
 ////////////////////////
-
-
