@@ -1,7 +1,7 @@
 const domBody = document.body;
 let squares = [];
 let gridRow = 20;
-let gridColumn = 10;
+let gridColumn = 20;
 // starting point doesn't work but is just for testing
 let startingDiv = gridRow / 2 + (gridColumn / 2) * 20;
 let currentObject;
@@ -86,37 +86,26 @@ function newShape(object) {
     startingDiv -
     Math.ceil(object.size / 2) -
     Math.ceil(object.size / 2) * gridRow;
-  draw(object);
-  currentObject = object;
+    currentObject = object;
+    draw(object);
 }
 
 ////////////////////////////////////////////////////
 ////////////////////////////////////////////////////
 ///////////////////////////////////////////////////
 
-function draw(object) {
-  object.layout.forEach((value, index) => {
-    if (value === 0) {
-    } else if (value === 1) {
-      let indexAdjust = calcPosition(index, object);
-      squares[indexAdjust].classList.add("red");
-    } else {
-      console.error("layout unexpected, can not draw");
-    }
+function draw() {
+  shapeGridTaken().forEach(element => {
+    squares[element].classList.add("red");
   });
-}
+} 
+
 
 newShape(zShape);
 
-function undraw(object) {
-  object.layout.forEach((value, index) => {
-    if (value === 0) {
-    } else if (value === 1) {
-      let indexAdjust = calcPosition(index, object);
-      squares[indexAdjust].classList.remove("red");
-    } else {
-      console.error("layout unexpected, can not draw");
-    }
+function undraw() {
+  shapeGridTaken().forEach(element => {
+    squares[element].classList.remove("red");
   });
 }
 
@@ -175,7 +164,7 @@ function moveLeft() {
 }
 
 function move(num) {
-  if (wallHitCheck(currentObject, num)) {
+  if (wallHitCheck(num)) {
   } else {
     undraw(currentObject);
     currentObject.firstTile = currentObject.firstTile + num;
@@ -188,64 +177,53 @@ function moveRotate() {
 }
 
 //check hit walls
-function wallHitCheck(object, num) {
+function wallHitCheck(num) {
   //true == hit
   let wallHit = false;
   if (num === 1) {
     let parametors = [-1, gridColumn * gridRow, gridRow];
-    wallHit = shapeGridTaken(moveForLoop, parametors);
+    wallHit = moveForLoop(shapeGridTaken(), parametors);
   } else if (num === -1) {
-    let parametors = [(0), (gridColumn * gridRow), (gridRow)];
-    wallHit = shapeGridTaken(moveForLoop, parametors);
+    let parametors = [0, gridColumn * gridRow, gridRow];
+    wallHit = moveForLoop(shapeGridTaken(), parametors);
   } else if (num === gridRow) {
-    let parametors = [(gridColumn * gridRow - gridRow), (gridColumn * gridRow - 1), (1)];
-    wallHit = shapeGridTaken(moveForLoop, parametors);
+    let parametors = [
+      gridColumn * gridRow - gridRow,
+      gridColumn * gridRow - 1,
+      1,
+    ];
+    wallHit = moveForLoop(shapeGridTaken(), parametors);
   } else if (num === -gridRow) {
-    let parametors = [(0), (gridRow), (1)];
-    wallHit = shapeGridTaken(moveForLoop, parametors, object);
+    let parametors = [0, gridRow, 1];
+    wallHit = moveForLoop(shapeGridTaken(), parametors);
   } else {
     console.error("unexpected movement calculation");
   }
   return wallHit;
 }
 
-function shapeGridTaken(func, parametors, object) {
-  let wallHit = false;
-  currentObject.layout.some((value, index) => {
+function shapeGridTaken() {
+  let result = [];
+  currentObject.layout.forEach((value, index) => {
     if (value === 0) {
     } else if (value === 1) {
       let indexAdjust = calcPosition(index, currentObject);
-      // console.log(indexAdjust);
-      wallHit = func(indexAdjust, parametors);
-      return wallHit
+      result.push(indexAdjust);
     } else {
-      console.error("layout unexpected detect hit");
+      console.error("layout unexpected - shapeGridTaken");
+    }
+  });
+  return result;
+}
+
+function moveForLoop(indexAdjust, para) {
+  let wallHit = false;
+  indexAdjust.some((value) => {
+    for (let i = para[0]; i < para[1]; i = i + para[2]) {
+      if (i === value) {
+        wallHit = true;
+      }
     }
   });
   return wallHit;
 }
-function moveForLoop(indexAdjust, para) {
-  let wallHit = false;
-  for (let i = para[0]; i < para[1]; i = i + para[2]) {
-    if (i === indexAdjust) {
-      // console.log('wallhit');
-      wallHit = true;
-      break;
-    }
-  }
-  // console.log(wallHit);
-  return wallHit;
-}
-
-// function test(e, g) {
-//   console.log(e + "gdsg");
-//   console.log(g);
-// }
-
-// let o = [1,2]
-
-// shapeGridTaken (test, o)
-
-///////////////////////
-/////////////////////
-////////////////////////
