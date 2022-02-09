@@ -1,41 +1,42 @@
 const domBody = document.body;
-let squares = [];
-let gridRow = 20;
-let gridColumn = 20;
+const gridDivArray = [];
+const gridRowLength = 15;
+const gridColumnLength = 10;
 // starting point doesn't work but is just for testing
-let startingDiv = gridRow / 2 + (gridColumn / 2) * 20;
+// let startingDiv = gridRowLength / 2 + (gridColumnLength / 2) * 20;
 let currentObject;
 
 function createGrid() {
   //Grid Specifications
-  let squareMeasurement = 25;
-  let squareMeasurementType = "px";
-
-  let numberOfSquare = gridRow * gridColumn;
-  let gridWidth = `${gridRow * squareMeasurement + squareMeasurementType}`;
-  let squareSize = squareMeasurement + squareMeasurementType;
+  let gridDivMeasurement = 25;
+  let gridDivMeasurementType = "px";
+  let numberOfDiv = gridRowLength * gridColumnLength;
+  let gridWidth = `${
+    gridRowLength * gridDivMeasurement + gridDivMeasurementType
+  }`;
+  let gridDivSize = gridDivMeasurement + gridDivMeasurementType;
   //create grid Elements
   const grid = document.createElement("div");
   grid.classList = "grid";
   grid.style.display = "grid";
   grid.style.width = gridWidth;
-  grid.style.gridTemplateColumns = `repeat(${gridRow}, auto)`;
+  grid.style.gridTemplateColumns = `repeat(${gridRowLength}, auto)`;
   domBody.appendChild(grid);
-  //grid squares
-  for (let i = 0; i < numberOfSquare; i++) {
-    let girdDiv = document.createElement("div");
-    girdDiv.style.width = squareSize;
-    girdDiv.style.height = squareSize;
+  //DIV in grid (gridDivArray)
+  for (let i = 0; i < numberOfDiv; i++) {
+    const girdDiv = document.createElement("div");
+    girdDiv.style.width = gridDivSize;
+    girdDiv.style.height = gridDivSize;
     girdDiv.classList = "gridSquare";
     girdDiv.id = i;
     grid.appendChild(girdDiv);
-    squares.push(girdDiv);
+    gridDivArray.push(girdDiv);
   }
 }
 createGrid();
 
 /////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////
+///////////////tetrominos////////////////////////
 /////////////////////////////////////////////////////////////
 class Shape {
   constructor(size, layout) {
@@ -60,9 +61,105 @@ const lineShape = new Shape(1, [1]);
 ////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////
+/////////////start tile////////////////////
+////////////////////////////////////////////////////
+
+///first shape currently
+function newShape(object) {
+  object.firstTile = 2
+    // startingDiv -
+    // Math.ceil(object.size / 2) -
+    // Math.ceil(object.size / 2) * gridRowLength;
+  currentObject = object;
+  draw(object);
+}
+
+newShape(zShape);
+////////////////////////////////////////////////////
+//////////////draw/undraw/////////////////////////
+///////////////////////////////////////////////////
+
+function draw() {
+  objectGridOccupied().forEach((element) => {
+    gridDivArray[element].classList.add("red");
+  });
+}
+
+function undraw() {
+  objectGridOccupied().forEach((element) => {
+    gridDivArray[element].classList.remove("red");
+  });
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////move////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////
+
+//keyListener
+function control(e) {
+  if (e.key === "ArrowLeft") {
+    move(-1);
+  } else if (e.key === "ArrowUp") {
+    move(-gridRowLength);
+  } else if (e.key === "ArrowRight") {
+    move(1);
+  } else if (e.key === "ArrowDown") {
+    move(gridRowLength);
+  } else if (e.key === "r" || e.key === "R") {
+    rotaion(currentObject);
+  } else if (e.key === " ") {
+    // pause();enter
+    console.log("ente");
+  } else if (e.key === "Enter") {
+    // enter()
+  }
+}
+document.addEventListener("keydown", control);
+
+
+function move(num) {
+  let gridSize = gridDivArray.length;
+  if (num === 1) {
+    //move right
+    let parametors = [-1, gridSize, gridRowLength];
+    legalMoveCheck(objectGridOccupied(), parametors, num);
+  } else if (num === -1) {
+    //move left
+    let parametors = [0, gridSize, gridRowLength];
+    legalMoveCheck(objectGridOccupied(), parametors, num);
+  } else if (num === gridRowLength) {
+    //move up
+    let parametors = [gridSize - gridRowLength, gridSize - 1, 1];
+    legalMoveCheck(objectGridOccupied(), parametors, num);
+  } else if (num === -gridRowLength) {
+    //move down
+    let parametors = [0, gridRowLength, 1];
+    legalMoveCheck(objectGridOccupied(), parametors, num);
+  } else {
+    console.error("unexpected movement calculation");
+  }
+  function legalMoveCheck(indexAdjust, para, num) {
+    let wallHitCheck = false;
+    indexAdjust.some((value) => {
+      for (let i = para[0]; i < para[1]; i = i + para[2]) {
+        if (i === value) {
+          wallHitCheck = true;
+        }
+      }
+    });
+    if (!wallHitCheck) {
+      undraw(currentObject);
+      currentObject.firstTile = currentObject.firstTile + num;
+      draw(currentObject);
+    }
+  }
+}
+
 function rotaion(e) {
   console.log("r");
-  let displayLayout = [];
+  const displayLayout = [];
   if (!(e.size * e.size == e.layout.length)) {
     console.error("shape size and length do not match. Can not roatate");
   } else {
@@ -76,154 +173,27 @@ function rotaion(e) {
     draw(e);
   }
 }
-
-///////////////////////////////////////////////////
 /////////////////////////////////////////////////////
-////////////////////////////////////////////////////
-
-function newShape(object) {
-  object.firstTile =
-    startingDiv -
-    Math.ceil(object.size / 2) -
-    Math.ceil(object.size / 2) * gridRow;
-    currentObject = object;
-    draw(object);
-}
-
-////////////////////////////////////////////////////
-////////////////////////////////////////////////////
-///////////////////////////////////////////////////
-
-function draw() {
-  shapeGridTaken().forEach(element => {
-    squares[element].classList.add("red");
-  });
-} 
-
-
-newShape(zShape);
-
-function undraw() {
-  shapeGridTaken().forEach(element => {
-    squares[element].classList.remove("red");
-  });
-}
-
-function calcPosition(index, object) {
-  let gridRowAdjust = Math.round((index - 1) / object.size) * gridRow;
-  let shapeRowAdjust = Math.floor(index / object.size) * object.size;
-  let indexAdjust = gridRowAdjust + index - shapeRowAdjust + object.firstTile;
-  return indexAdjust;
-}
-
-// undraw(zShape);
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////
-
-//keyListener
-function control(e) {
-  // console.log(e.key);
-  if (e.key === "ArrowLeft") {
-    moveLeft();
-  } else if (e.key === "ArrowUp") {
-    moveUp();
-  } else if (e.key === "ArrowRight") {
-    moveRight();
-  } else if (e.key === "ArrowDown") {
-    moveDown();
-  } else if (e.key === "r" || e.key === "R") {
-    rotaion(currentObject);
-  } else if (e.key === " ") {
-    // pause();enter
-    console.log("ente");
-  } else if (e.key === "Enter") {
-    // enter()
-  }
-}
-document.addEventListener("keydown", control);
-
-/////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////
-
-function moveUp() {
-  move(-gridRow);
-}
-
-function moveDown() {
-  move(gridRow);
-}
-
-function moveRight() {
-  move(1);
-}
-
-function moveLeft() {
-  move(-1);
-}
-
-function move(num) {
-  if (wallHitCheck(num)) {
-  } else {
-    undraw(currentObject);
-    currentObject.firstTile = currentObject.firstTile + num;
-    draw(currentObject);
-  }
-}
-
-function moveRotate() {
-  console.log("moveRotate");
-}
-
-//check hit walls
-function wallHitCheck(num) {
-  //true == hit
-  let wallHit = false;
-  if (num === 1) {
-    let parametors = [-1, gridColumn * gridRow, gridRow];
-    wallHit = moveForLoop(shapeGridTaken(), parametors);
-  } else if (num === -1) {
-    let parametors = [0, gridColumn * gridRow, gridRow];
-    wallHit = moveForLoop(shapeGridTaken(), parametors);
-  } else if (num === gridRow) {
-    let parametors = [
-      gridColumn * gridRow - gridRow,
-      gridColumn * gridRow - 1,
-      1,
-    ];
-    wallHit = moveForLoop(shapeGridTaken(), parametors);
-  } else if (num === -gridRow) {
-    let parametors = [0, gridRow, 1];
-    wallHit = moveForLoop(shapeGridTaken(), parametors);
-  } else {
-    console.error("unexpected movement calculation");
-  }
-  return wallHit;
-}
-
-function shapeGridTaken() {
+/////////////////where object is in grid
+////////////////////////
+/////////////////////////////////////////////////////////////
+function objectGridOccupied() {
   let result = [];
   currentObject.layout.forEach((value, index) => {
     if (value === 0) {
     } else if (value === 1) {
-      let indexAdjust = calcPosition(index, currentObject);
+      let gridRowAdjust =
+        Math.round((index - 1) / currentObject.size) * gridRowLength;
+        // console.log("gridRowAdjust "+ gridRowAdjust);
+      let shapeRowAdjust =
+        Math.floor(index / currentObject.size) * currentObject.size;
+        // console.log(shapeRowAdjust +shapeRowAdjust);
+      let indexAdjust =
+        gridRowAdjust + index - shapeRowAdjust + currentObject.firstTile;
       result.push(indexAdjust);
     } else {
-      console.error("layout unexpected - shapeGridTaken");
+      console.error("layout unexpected - objectGridOccupied");
     }
   });
   return result;
-}
-
-function moveForLoop(indexAdjust, para) {
-  let wallHit = false;
-  indexAdjust.some((value) => {
-    for (let i = para[0]; i < para[1]; i = i + para[2]) {
-      if (i === value) {
-        wallHit = true;
-      }
-    }
-  });
-  return wallHit;
 }
