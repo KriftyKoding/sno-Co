@@ -100,15 +100,19 @@ function undraw() {
 //keyListener
 function control(e) {
   if (e.key === "ArrowLeft") {
-    move("left", "move");
+    //move("left", "move");
+    move("move", "left")
   } else if (e.key === "ArrowUp") {
-    move("top", "move");
+    //move("top", "move");
+    move("move", "up")
   } else if (e.key === "ArrowRight") {
-    move("right", "move");
+    //move("right", "move");
+    move("move", "right")
   } else if (e.key === "ArrowDown") {
-    move("bottom", "move");
+    //move("bottom", "move");
+    move("move", "down")
   } else if (e.key === "r" || e.key === "R") {
-    rotaion(currentObject, "rotate");
+    move("rotation");
   } else if (e.key === " ") {
     // pause();enter
     console.log("ente");
@@ -118,80 +122,54 @@ function control(e) {
 }
 document.addEventListener("keydown", control);
 
-function move(edge, type) {
-  let gridSize = gridDivArray.length;
-  if (edge === "right") {
-    //move right
-    let parametors = [-1, gridSize, gridRowLength, 1];
-    legalMoveCheck(objectGridOccupied(), parametors, 1);
-  } else if (edge === "left") {
-    //move left
-    let parametors = [0, gridSize, gridRowLength, -1];
-    legalMoveCheck(objectGridOccupied(), parametors, -1);
-  } else if (edge === "bottom") {
-    let parametors = [gridSize - gridRowLength, gridSize - 1, 1, gridRowLength];
-    legalMoveCheck(objectGridOccupied(), parametors, gridRowLength);
-  } else if (edge === "top") {
-    let parametors = [0, gridRowLength, 1, -gridRowLength];
-    legalMoveCheck(objectGridOccupied(), parametors, -gridRowLength);
-  } else {
-    console.error("unexpected movement calculation");
-  }
-
-  function legalMoveCheck(indexAdjust, para) {
-    let wallHitCheck = false;
-    indexAdjust.some((value) => {
-      for (let i = para[0]; i < para[1]; i = i + para[2]) {
-        if (i === value) {
-          wallHitCheck = true;
-        }
-      }
-    });
-    if (!wallHitCheck) {
-      undraw(currentObject);
-      drawType(type, para[3]);
-      draw(currentObject);
-    }
-  }
-
-  function drawType(type, num) {
-    if (type === "move") {
-      currentObject.firstTile = currentObject.firstTile + num;
-    } else if (type === "rotate") {
-      currentObject = tempObject;
-    } else {
-      console.error("drawType unknown");
-    }
-  }
-}
-
-function rotaion(e) {
-  const layoutHolder = [];
-  let gridMaxIndex = gridDivArray.length - 1;
-  let currentObjectDivArray = objectGridOccupied(currentObject)
-  let edgeTest = true;
-  let leftEdgeDivArry = []
-  let rightEdgeDivArry =[]
-  let rightCornerDiv = gridRowLength -1
-  //potential object layout Create
-  for (let i = 0; i < e.size; i++) {
-    for (let j = e.size - 1; j >= 0; j--) {
-      layoutHolder.push(e.layout[e.size * j + i]);
-    }
-  }
+function move(type, direction, object = currentObject) {
+  const gridMaxIndex = gridDivArray.length - 1;
+  const currentObjectDivArray = objectGridOccupied(currentObject)
   const potentialObject = Object.create(currentObject);
-  potentialObject.layout = layoutHolder;
+  let edgeTest = true;
+  
+  //potential move Object Creation
+  if (type === "rotation") {
+    const layoutHolder = [];
+    for (let i = 0; i < object.size; i++) {
+      for (let j = object.size - 1; j >= 0; j--) {
+        layoutHolder.push(object.layout[object.size * j + i]);
+        potentialObject.layout = layoutHolder;
+      }
+    }
+  } else if (type === "move") {
+    if (direction === "up"){
+      moveObject(-gridRowLength)
+    }else if (direction === "down"){
+      moveObject(gridRowLength)
+    }else if (direction === "right"){
+      moveObject(1)
+    }else if (direction === "left") {
+      moveObject(-1)
+    }else {
+      console.error("unexpect Direction");
+    }
+  }
+  function moveObject (direction) {
+    potentialObject.firstTile = potentialObject.firstTile + direction
+  }
   let potentialObjectDivArray = objectGridOccupied(potentialObject);
-  //left Edge Array Create
+  
+
+  const leftEdgeDivArry = []
   for (let i = 0; i < gridMaxIndex; i = i + gridRowLength) {
     leftEdgeDivArry.push(i)
   }
-  //rightEdgeArrayCreate
+  const rightEdgeDivArry =[]
+  const rightCornerDiv = gridRowLength -1
   for (let i = rightCornerDiv; i <= gridMaxIndex; i = i + gridRowLength) {
     rightEdgeDivArry.push(i)
   }
   let objectOnLeftEdge =currentObjectDivArray.filter(div => leftEdgeDivArry.includes(div));
   let objectCrossLeftEdge = potentialObjectDivArray.filter(div => rightEdgeDivArry.includes(div));
+ 
+
+   //test if object hit edges
   //if object is on left edge does action cause it to cross
   if (objectOnLeftEdge.length > 0) {
     if (objectCrossLeftEdge.length > 0) {
@@ -199,7 +177,7 @@ function rotaion(e) {
       edgeTest = false;
     }
   }
-  let objectOnRightEdge =currentObjectDivArray.filter(div => rightEdgeDivArry.includes(div));
+  let objectOnRightEdge = currentObjectDivArray.filter(div => rightEdgeDivArry.includes(div));
   let objectCrossrightEdge = potentialObjectDivArray.filter(div => leftEdgeDivArry.includes(div));
   //if object is on right edge does action cause it to cross
   if (objectOnRightEdge.length > 0) {
@@ -219,7 +197,7 @@ function rotaion(e) {
     } 
   });
   
-  // if pass edge test, do action
+  // do action when legal
   if (edgeTest == true) {
     undraw();
     currentObject = potentialObject;
@@ -227,17 +205,6 @@ function rotaion(e) {
   }
 
 }
-
-function drawType(type) {
-  if (type === "move") {
-    currentObject.firstTile = currentObject.firstTile + num;
-  } else if (type === "rotate") {
-    currentObject = tempObject;
-  } else {
-    console.error("drawType unknown");
-  }
-}
-
 /////////////////////////////////////////////////////
 /////////////////where object is in grid
 ////////////////////////
