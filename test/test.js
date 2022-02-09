@@ -168,89 +168,64 @@ function move(edge, type) {
 function rotaion(e) {
   const layoutHolder = [];
   let gridMaxIndex = gridDivArray.length - 1;
-
+  let currentObjectDivArray = objectGridOccupied(currentObject)
+  let edgeTest = true;
+  let leftEdgeDivArry = []
+  let rightEdgeDivArry =[]
+  let rightCornerDiv = gridRowLength -1
+  //potential object layout Create
   for (let i = 0; i < e.size; i++) {
     for (let j = e.size - 1; j >= 0; j--) {
       layoutHolder.push(e.layout[e.size * j + i]);
     }
   }
-
-  const tempObject = Object.create(currentObject);
-  tempObject.layout = layoutHolder;
-  let potentialObjectGrid = objectGridOccupied(tempObject);
-  let currentObjectGrid = objectGridOccupied(currentObject)
-
-  console.log(potentialObjectGrid);
-  //console.log(-gridRowLength);
-  //console.log(gridMaxIndex);
-  let edge = true;
-  let leftEdgeDivArry = []
+  const potentialObject = Object.create(currentObject);
+  potentialObject.layout = layoutHolder;
+  let potentialObjectDivArray = objectGridOccupied(potentialObject);
+  //left Edge Array Create
   for (let i = 0; i < gridMaxIndex; i = i + gridRowLength) {
     leftEdgeDivArry.push(i)
   }
-  let rightEdgeDivArry =[]
-  let rightCornerDiv = gridRowLength -1
+  //rightEdgeArrayCreate
   for (let i = rightCornerDiv; i <= gridMaxIndex; i = i + gridRowLength) {
     rightEdgeDivArry.push(i)
-   }
-  let objectOnLeftEdge =currentObjectGrid.filter(div => leftEdgeDivArry.includes(div));
-  let objectCrossLeftEdge = potentialObjectGrid.filter(div => rightEdgeDivArry.includes(div));
+  }
+  let objectOnLeftEdge =currentObjectDivArray.filter(div => leftEdgeDivArry.includes(div));
+  let objectCrossLeftEdge = potentialObjectDivArray.filter(div => rightEdgeDivArry.includes(div));
+  //if object is on left edge does action cause it to cross
   if (objectOnLeftEdge.length > 0) {
     if (objectCrossLeftEdge.length > 0) {
       console.log("illegal move bottom");
-      edge = false;
+      edgeTest = false;
     }
   }
-  let objectOnRightEdge =currentObjectGrid.filter(div => rightEdgeDivArry.includes(div));
-  let objectCrossrightEdge = potentialObjectGrid.filter(div => leftEdgeDivArry.includes(div));
+  let objectOnRightEdge =currentObjectDivArray.filter(div => rightEdgeDivArry.includes(div));
+  let objectCrossrightEdge = potentialObjectDivArray.filter(div => leftEdgeDivArry.includes(div));
+  //if object is on right edge does action cause it to cross
   if (objectOnRightEdge.length > 0) {
     if (objectCrossrightEdge.length > 0) {
       console.log("illegal move bottom");
-      edge = false;
+      edgeTest = false;
     }
   }
- 
-  potentialObjectGrid.some((gridIndex) => {
+  //does action casue object to go above or below gird
+  potentialObjectDivArray.some((gridIndex) => {
     if (gridIndex > gridMaxIndex) {
       console.log("illegal move bottom");
-      edge = false;
+      edgeTest = false;
     } else if (gridIndex < 0) {
       console.log("illegal move top");
-      edge = false;
+      edgeTest = false;
     } 
   });
   
-  
-  if (edge == true) {
+  // if pass edge test, do action
+  if (edgeTest == true) {
     undraw();
-    currentObject = tempObject;
+    currentObject = potentialObject;
     draw();
   }
 
-  //objectGrid.some
-
-  //if (edge === "bottom") {
-  //  let parametors = [gridSize - gridRowLength, gridSize - 1, 1, gridRowLength];
-  //  legalMoveCheck(objectGridOccupied(), parametors, gridRowLength);
-  //}
-
-  //function legalMoveCheck(indexAdjust, para, num) {
-  //  let wallHitCheck = false;
-  //  indexAdjust.some((value) => {
-  //    for (let i = para[0]; i < para[1]; i = i + para[2]) {
-  //      if (i === value) {
-  //        wallHitCheck = true;
-  //      }
-  //    }
-  //  });
-  //  if (!wallHitCheck) {
-  //    console.log("legal");
-
-  //  } else {console.log("not legal");}
-  //}
-
-  //console.log( tempObject.layout);
-  //console.log( currentObject.layout);
 }
 
 function drawType(type) {
