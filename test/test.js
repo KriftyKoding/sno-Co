@@ -101,16 +101,16 @@ function undraw() {
 function control(e) {
   if (e.key === "ArrowLeft") {
     //move("left", "move");
-    move("move", "left")
+    move("move", "left");
   } else if (e.key === "ArrowUp") {
     //move("top", "move");
-    move("move", "up")
+    move("move", "up");
   } else if (e.key === "ArrowRight") {
     //move("right", "move");
-    move("move", "right")
+    move("move", "right");
   } else if (e.key === "ArrowDown") {
     //move("bottom", "move");
-    move("move", "down")
+    move("move", "down");
   } else if (e.key === "r" || e.key === "R") {
     move("rotation");
   } else if (e.key === " ") {
@@ -123,12 +123,13 @@ function control(e) {
 document.addEventListener("keydown", control);
 
 function move(type, direction, object = currentObject) {
-  const gridMaxIndex = gridDivArray.length - 1;
-  const currentObjectDivArray = objectGridOccupied(currentObject)
+  const lastDivInGrid = gridDivArray.length - 1;
+  const currentObjectDivArray = objectGridOccupied(currentObject);
   const potentialObject = Object.create(currentObject);
   let edgeTest = true;
-  
-  //potential move Object Creation
+  let rotationCount = 0;
+
+  //potential action Object Creation
   if (type === "rotation") {
     const layoutHolder = [];
     for (let i = 0; i < object.size; i++) {
@@ -138,73 +139,107 @@ function move(type, direction, object = currentObject) {
       }
     }
   } else if (type === "move") {
-    if (direction === "up"){
-      moveObject(-gridRowLength)
-    }else if (direction === "down"){
-      moveObject(gridRowLength)
-    }else if (direction === "right"){
-      moveObject(1)
-    }else if (direction === "left") {
-      moveObject(-1)
-    }else {
+    if (direction === "up") {
+      moveObject(-gridRowLength);
+    } else if (direction === "down") {
+      moveObject(gridRowLength);
+    } else if (direction === "right") {
+      moveObject(1);
+    } else if (direction === "left") {
+      moveObject(-1);
+    } else {
       console.error("unexpect Direction");
     }
   }
-  function moveObject (direction) {
-    potentialObject.firstTile = potentialObject.firstTile + direction
+  function moveObject(direction) {
+    potentialObject.firstTile = potentialObject.firstTile + direction;
   }
   let potentialObjectDivArray = objectGridOccupied(potentialObject);
-  
 
-  const leftEdgeDivArry = []
-  for (let i = 0; i < gridMaxIndex; i = i + gridRowLength) {
-    leftEdgeDivArry.push(i)
+  const leftEdgeDivArry = [];
+  for (let i = 0; i < lastDivInGrid; i = i + gridRowLength) {
+    leftEdgeDivArry.push(i);
   }
-  const rightEdgeDivArry =[]
-  const rightCornerDiv = gridRowLength -1
-  for (let i = rightCornerDiv; i <= gridMaxIndex; i = i + gridRowLength) {
-    rightEdgeDivArry.push(i)
+  const rightEdgeDivArry = [];
+  const rightCornerDiv = gridRowLength - 1;
+  for (let i = rightCornerDiv; i <= lastDivInGrid; i = i + gridRowLength) {
+    rightEdgeDivArry.push(i);
   }
-  let objectOnLeftEdge =currentObjectDivArray.filter(div => leftEdgeDivArry.includes(div));
-  let objectCrossLeftEdge = potentialObjectDivArray.filter(div => rightEdgeDivArry.includes(div));
- 
+  let objectOnLeftEdge = currentObjectDivArray.filter((div) =>
+    leftEdgeDivArry.includes(div)
+  );
+  let objectCrossLeftEdge = potentialObjectDivArray.filter((div) =>
+    rightEdgeDivArry.includes(div)
+  );
 
-   //test if object hit edges
+  //test if object hit edges
   //if object is on left edge does action cause it to cross
   if (objectOnLeftEdge.length > 0) {
     if (objectCrossLeftEdge.length > 0) {
-      console.log("illegal move bottom");
+      allowRotation("left");
       edgeTest = false;
     }
   }
-  let objectOnRightEdge = currentObjectDivArray.filter(div => rightEdgeDivArry.includes(div));
-  let objectCrossrightEdge = potentialObjectDivArray.filter(div => leftEdgeDivArry.includes(div));
+  let objectOnRightEdge = currentObjectDivArray.filter((div) =>
+    rightEdgeDivArry.includes(div)
+  );
+  let objectCrossrightEdge = potentialObjectDivArray.filter((div) =>
+    leftEdgeDivArry.includes(div)
+  );
   //if object is on right edge does action cause it to cross
   if (objectOnRightEdge.length > 0) {
     if (objectCrossrightEdge.length > 0) {
-      console.log("illegal move bottom");
+      allowRotation("right");
       edgeTest = false;
     }
   }
   //does action casue object to go above or below gird
   potentialObjectDivArray.some((gridIndex) => {
-    if (gridIndex > gridMaxIndex) {
-      console.log("illegal move bottom");
+    //bottom edge check
+    if (gridIndex > lastDivInGrid) {
+      allowRotation("down");
       edgeTest = false;
+      //to edge check
     } else if (gridIndex < 0) {
-      console.log("illegal move top");
+      allowRotation("up");
       edgeTest = false;
-    } 
+    }
   });
-  
-  // do action when legal
+
+  //fixe rotation so allowed
+  function allowRotation(wallHit) {
+    if (type === move) {
+      console.log("skip");
+    } else if (rotationCount > 0) {
+      console.error("rotationCorrection FAIL");
+    } else if (type === "rotation") {
+      rotationCount++;
+      if (wallHit === "down") {
+        move("move", "up");
+        move("rotation");
+      } else if (wallHit === "up") {
+        move("move", "down");
+        move("rotation");
+      } else if (wallHit === "left") {
+        move("move", "right");
+        move("rotation");
+      } else if (wallHit === "right") {
+        move("move", "left");
+        move("rotation");
+      } else {
+        console.error("unexpect Direction");
+      }
+    }
+  }
+   //do action if legal
   if (edgeTest == true) {
+    rotationCount = 0;
     undraw();
     currentObject = potentialObject;
     draw();
   }
-
 }
+
 /////////////////////////////////////////////////////
 /////////////////where object is in grid
 ////////////////////////
