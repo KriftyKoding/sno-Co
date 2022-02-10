@@ -1,10 +1,12 @@
 const domBody = document.body;
 const gridDivArray = [];
+const tetrominoArray = [];
 const gridRowLength = 15;
 const gridColumnLength = 10;
 // starting point doesn't work but is just for testing
 // let startingDiv = gridRowLength / 2 + (gridColumnLength / 2) * 20;
 let currentObject;
+let nextObject;
 
 function createGrid() {
   //Grid Specifications
@@ -58,25 +60,44 @@ const singleShape = new Shape(
 );
 const lineShape = new Shape(1, [1]);
 
+tetrominoArray.push(lShape, lBackwardsShape, sShape, zShape, tShape, squaereShape, singleShape, lineShape)
+
 ////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////
 
-///////////////////////////////////////////////////
-/////////////start tile////////////////////
-////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////
+///////////////////start tile////////////////////////////
+/////////////////////////////////////////////////////////
 
-///first shape currently
-function newShape(object) {
-  object.firstTile = 2;
-  // startingDiv -
-  // Math.ceil(object.size / 2) -
-  // Math.ceil(object.size / 2) * gridRowLength;
-  currentObject = object;
-  draw(object);
+function selectRandomObject (objectArry = tetrominoArray) {
+  return Math.floor(Math.random() * objectArry.length)
 }
 
-newShape(zShape);
+
+
+///first shape currently
+function newShape(startShape = false) {
+  if (startShape === true) {
+    nextObject = tetrominoArray[selectRandomObject()];
+  } else {
+    let activeObjectArray = objectGridOccupied();
+    activeObjectArray.forEach(tileNum => {
+    gridDivArray[tileNum].classList.add("taken");
+    });
+  }
+  currentObject = nextObject;
+  nextObject = tetrominoArray[selectRandomObject()];
+  currentObject.firstTile = gridRowLength;
+  draw(currentObject);
+}
+
+newShape(true);
+
+function newShapeCheck() {
+  newShape();
+  
+}
 ////////////////////////////////////////////////////
 //////////////draw/undraw/////////////////////////
 ///////////////////////////////////////////////////
@@ -114,7 +135,7 @@ function control(e) {
   } else if (e.key === "r" || e.key === "R") {
     move("rotation");
   } else if (e.key === " ") {
-    // pause();enter
+    newShape();
     console.log("ente");
   } else if (e.key === "Enter") {
     // enter()
@@ -123,8 +144,8 @@ function control(e) {
 document.addEventListener("keydown", control);
 
 function move(type, direction, object = currentObject) {
-  const lastDivInGrid = gridDivArray.length - 1;
-  const currentObjectDivArray = objectGridOccupied(currentObject);
+  const lastTileInGrid = gridDivArray.length - 1;
+  const currentObjectTileArray = objectGridOccupied(currentObject);
   const potentialObject = Object.create(currentObject);
   let edgeTest = true;
   let rotationCount = 0;
@@ -151,25 +172,26 @@ function move(type, direction, object = currentObject) {
       console.error("unexpect Direction");
     }
   }
+
   function moveObject(direction) {
     potentialObject.firstTile = potentialObject.firstTile + direction;
   }
-  let potentialObjectDivArray = objectGridOccupied(potentialObject);
+  let potentialObjectTileArray = objectGridOccupied(potentialObject);
 
-  const leftEdgeDivArry = [];
-  for (let i = 0; i < lastDivInGrid; i = i + gridRowLength) {
-    leftEdgeDivArry.push(i);
+  const leftEdgeTileArry = [];
+  for (let i = 0; i < lastTileInGrid; i = i + gridRowLength) {
+    leftEdgeTileArry.push(i);
   }
-  const rightEdgeDivArry = [];
-  const rightCornerDiv = gridRowLength - 1;
-  for (let i = rightCornerDiv; i <= lastDivInGrid; i = i + gridRowLength) {
-    rightEdgeDivArry.push(i);
+  const rightEdgeTileArry = [];
+  const rightUpperCornerTile = gridRowLength - 1;
+  for (let i = rightUpperCornerTile; i <= lastTileInGrid; i = i + gridRowLength) {
+    rightEdgeTileArry.push(i);
   }
-  let objectOnLeftEdge = currentObjectDivArray.filter((div) =>
-    leftEdgeDivArry.includes(div)
+  let objectOnLeftEdge = currentObjectTileArray.filter((tile) =>
+    leftEdgeTileArry.includes(tile)
   );
-  let objectCrossLeftEdge = potentialObjectDivArray.filter((div) =>
-    rightEdgeDivArry.includes(div)
+  let objectCrossLeftEdge = potentialObjectTileArray.filter((tile) =>
+    rightEdgeTileArry.includes(tile)
   );
 
   //test if object hit edges
@@ -180,11 +202,12 @@ function move(type, direction, object = currentObject) {
       edgeTest = false;
     }
   }
-  let objectOnRightEdge = currentObjectDivArray.filter((div) =>
-    rightEdgeDivArry.includes(div)
+  let objectOnRightEdge = currentObjectTileArray.filter((tile) =>
+    rightEdgeTileArry.includes(tile)
   );
-  let objectCrossrightEdge = potentialObjectDivArray.filter((div) =>
-    leftEdgeDivArry.includes(div)
+  
+  let objectCrossrightEdge = potentialObjectTileArray.filter((tile) =>
+    leftEdgeTileArry.includes(tile)
   );
   //if object is on right edge does action cause it to cross
   if (objectOnRightEdge.length > 0) {
@@ -194,9 +217,9 @@ function move(type, direction, object = currentObject) {
     }
   }
   //does action casue object to go above or below gird
-  potentialObjectDivArray.some((gridIndex) => {
+  potentialObjectTileArray.some((gridIndex) => {
     //bottom edge check
-    if (gridIndex > lastDivInGrid) {
+    if (gridIndex > lastTileInGrid) {
       allowRotation("down");
       edgeTest = false;
       //to edge check
@@ -239,14 +262,13 @@ function move(type, direction, object = currentObject) {
     draw();
   }
 }
-
 /////////////////////////////////////////////////////
 /////////////////where object is in grid
 ////////////////////////
 /////////////////////////////////////////////////////////////
 function objectGridOccupied(object = currentObject) {
   let result = [];
-  if (!(object.size * object.size == object.layout.length)) {
+  if (!(Math.pow(object.size , 2) == object.layout.length)) {
     console.error("shape size and length do not match. Can not roatate");
   } else {
     object.layout.forEach((value, index) => {
