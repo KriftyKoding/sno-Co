@@ -54,9 +54,13 @@ const sShape = new Shape(3, [0, 1, 1, 1, 1, 0, 0, 0, 0]);
 const zShape = new Shape(3, [1, 1, 0, 0, 1, 1, 0, 0, 0]);
 const tShape = new Shape(3, [0, 0, 0, 1, 1, 1, 0, 1, 0]);
 const squaereShape = new Shape(2, [1, 1, 1, 1]);
+//const singleShape = new Shape(
+//  4,
+//  [0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0]
+//);
 const singleShape = new Shape(
   4,
-  [0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0]
+  [0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0]
 );
 const lineShape = new Shape(1, [1]);
 
@@ -79,7 +83,8 @@ function selectRandomObject (objectArry = tetrominoArray) {
 ///first shape currently
 function newShape(startShape = false) {
   if (startShape === true) {
-    nextObject = tetrominoArray[selectRandomObject()];
+    //nextObject = tetrominoArray[selectRandomObject()];
+    nextObject = singleShape;
   } else {
     let activeObjectArray = objectGridOccupied();
     activeObjectArray.forEach(tileNum => {
