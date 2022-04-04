@@ -1,0 +1,33 @@
+{
+  "name": "sno-co",
+  "version": "1.0.0",
+  "description": "Weird Function Cause key down 1 and End give upArrow results bc my keyboard is special and I need to be able to test.",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "watch": "webpack --watch",
+    "build": "webpack",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KriftyKoding/sno-Co.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KriftyKoding/sno-Co/issues"
+  },
+  "homepage": "https://github.com/KriftyKoding/sno-Co#readme",
+  "devDependencies": {
+    "@webpack-cli/generators": "^2.4.2",
+    "html-webpack-plugin": "^5.5.0",
+    "npm-watch": "^0.11.0",
+    "webpack": "^5.71.0"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21"
+  }
+}
