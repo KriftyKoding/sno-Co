@@ -157,13 +157,18 @@ function move(type, direction, object = currentObject) {
 
   //potential action Object Creation
   if (type === "rotation") {
+    console.log("ROTATION");
     const layoutHolder = [];
     for (let i = 0; i < object.size; i++) {
+      //console.log(i);
       for (let j = object.size - 1; j >= 0; j--) {
+        //console.log(j);
+        //console.log(object);
         layoutHolder.push(object.layout[object.size * j + i]);
         potentialObject.layout = layoutHolder;
       }
     }
+    //console.log(potentialObject);
   } else if (type === "move") {
     if (direction === "up") {
       moveObject(-gridRowLength);
@@ -236,9 +241,10 @@ function move(type, direction, object = currentObject) {
 
   //fixe rotation so allowed
   function allowRotation(wallHit) {
+    console.log("ROtATION FIX");
     if (type === move) {
       console.log("skip");
-    } else if (rotationCount > 0) {
+    } else if (rotationCount == 0) {
       console.error("rotationCorrection FAIL");
     } else if (type === "rotation") {
       rotationCount++;
@@ -273,19 +279,28 @@ function move(type, direction, object = currentObject) {
 /////////////////////////////////////////////////////////////
 function objectGridOccupied(object = currentObject) {
   let result = [];
+  console.log(object);
+  console.log(currentObject);
   if (!(Math.pow(object.size , 2) == object.layout.length)) {
     console.error("shape size and length do not match. Can not roatate");
   } else {
     object.layout.forEach((value, index) => {
       if (value === 0) {
       } else if (value === 1) {
+        console.log("test");
+        ////////////////////////////
+        ///////////////////////////////
+        //////////////////////////////////
+        ////////////////////////
+        //here display wrong
         let gridRowAdjust =
-          Math.round((index - 1) / object.size) * gridRowLength;
+          Math.ceil((index + 1) / object.size) * gridRowLength;
         // console.log("gridRowAdjust "+ gridRowAdjust);
         let shapeRowAdjust = Math.floor(index / object.size) * object.size;
         // console.log(shapeRowAdjust +shapeRowAdjust);
         let indexAdjust =
-          gridRowAdjust + index - shapeRowAdjust + object.firstTile;
+          gridRowAdjust + index - shapeRowAdjust + object.firstTile;  
+
         result.push(indexAdjust);
       } else {
         console.error("layout unexpected - objectGridOccupied");
