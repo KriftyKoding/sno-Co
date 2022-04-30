@@ -252,7 +252,34 @@ function move(type, direction, object = currentObject) {
   //
   //hit exsiting object
   //
-  console.log(takeTiles);
+  const takeTileNumArray = []
+  takeTiles.forEach(element => {
+    takeTileNumArray.push(parseInt(element.id))
+  });
+  console.log((takeTileNumArray));
+
+  let objectNextToTakenTile = currentObjectTileArray.filter((tile) =>
+  takeTileNumArray.includes(tile)
+);
+
+let objectOnTakenOject = potentialObjectTileArray.filter((tile) =>
+takeTileNumArray.includes(tile)
+);
+//if object is on right edge does action cause it to cross
+console.log(objectNextToTakenTile);
+console.log(objectOnTakenOject);
+
+if (objectOnTakenOject.length > 0) {
+  //if (objectCrossrightEdge.length > 0) {
+    //allowRotation("right");
+    edgeTest = false;
+    console.log("on object");
+}
+
+
+
+
+
   //if tile is close ??? does it hit????
   //move gitqxd
 
