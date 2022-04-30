@@ -1,0 +1,15 @@
+.grid {
+    grid-gap: 1px;
+}
+
+.gridSquare {
+    background-color: green;
+}
+
+.red {
+    background-color: red;
+}
+
+.taken {
+    background-color: purple;
+}
