@@ -1,4 +1,6 @@
-const domBody = document.body;
+function moving () {
+
+    const domBody = document.body;
 const gridDivArray = [];
 const tetrominoArray = [];
 const gridRowLength = 15;
@@ -368,3 +370,6 @@ function objectGridOccupied(object = currentObject) {
   }
 }
 
+}
+
+module.exports = moving;
