@@ -128,35 +128,6 @@ function moving() {
   /////////////////////////////////////////////////////////
   //NewShape/FirstShape
   /////////////////////////////////////////////////////////
-  function space() {
-    //console.log(outOfBoundsTileArray);
-    
-    let outOfBoundArray = []
-    outOfBoundsTileArray.forEach(element => {
-      outOfBoundArray.push(parseInt(element.id))
-    });
-
-
-
-    console.log(objectGridLocationCalc());
-    console.log(outOfBoundsTileArray);
-    console.log(outOfBoundArray);
-
-    let objectOutOfBounds = objectGridLocationCalc().filter((tile) =>
-    outOfBoundArray.includes(tile)
-    );
-
-    console.log(objectOutOfBounds);
-
-    newShape();
-    ////////
-    ///////////////////
-    //////////////////////
-    //if current object is on tile of OutofBound do not continue
-    //////
-    //////
-  }
-
   function newShape(startShape = false) {
     if (startShape === true) {
       nextObject = tetrominoArray[selectRandomObject()];
@@ -168,7 +139,6 @@ function moving() {
         takeTilesArray.push(gridDivArray[tileNum]);
       });
     }
-
     currentObject = nextObject;
     nextObject = tetrominoArray[selectRandomObject()];
     currentObject.firstTile = gridRowLength;
@@ -199,6 +169,7 @@ function moving() {
   //Movement control
   ///////////////////////////////////////////////////////////////////////
 
+  
   function movementControlFunction() {
     //keyListener
     function control(e) {
@@ -221,6 +192,16 @@ function moving() {
       }
     }
     document.addEventListener("keydown", control);
+    
+    function space() {
+      objectGridLocationCalc().every(element => {  
+        if (gridDivArray[element].classList.contains('outOffBounds')) {
+          return false;
+        } else {
+           newShape();
+        }
+    });
+    }  
 
     //movement calculations
     const lastTileInGrid = gridDivArray.length - 1;
