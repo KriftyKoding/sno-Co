@@ -223,7 +223,6 @@ function moving() {
       const currentObjectTileArray = objectGridLocationCalc(currentObject);
       const potentialObject = Object.create(currentObject);
       let edgeTest = true;
-      let rotationCount = 0;
 
       //potential action Object Creation
       if (type === "rotation") {
