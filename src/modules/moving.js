@@ -5,9 +5,10 @@ function moving() {
   const gridDivArray = [];
   const tetrominoArray = [];
   const takeTilesArray = [];
+  const outOfBoundsTileArray = [];
   let currentObject;
   let nextObject;
-  
+
   shapeCreation();
   createGrid();
   outerEdge();
@@ -97,45 +98,77 @@ function moving() {
   /////////////////////////////////////////////////////////
   //out of bounds area
   //////////
-  function outerEdge () {
-    let outerEdgeSize = 3
-    for (let i = 0; i < gridRowLength * outerEdgeSize; i++) { // shows 0, then 1, then 2
+  function outerEdge() {
+    let outerEdgeSize = 3;
+    for (let i = 0; i < gridRowLength * outerEdgeSize; i++) {
       //top rows
-      gridDivArray[i].classList.add("outOffBounds");
+      outOfBunds(i);
       ////bottom rows
-      const outOfBoundBottom = gridColumnLength* gridRowLength - gridRowLength* 3 + i;
-      gridDivArray[outOfBoundBottom].classList.add("outOffBounds");
+      outOfBunds(gridColumnLength * gridRowLength - gridRowLength * 3 + i);
     }
-    
-    for (let i = 0; i < (gridColumnLength* gridRowLength - gridColumnLength + 4); i += gridRowLength) { // shows 0, then 1, then 2
-      console.log("start");
-      for (let j = 0; j < outerEdgeSize; j++) { // shows 0, then 1, then 2
-        const outOfBoundRight = (i+j);
-        const outOfBoundLeft = (i+j+gridRowLength-3);
-        gridDivArray[outOfBoundRight].classList.add("outOffBounds");
-        gridDivArray[outOfBoundLeft].classList.add("outOffBounds");
-      }   
+
+    for (
+      let i = 0;
+      i < gridColumnLength * gridRowLength - gridColumnLength + 4;
+      i += gridRowLength
+    ) {
+      for (let j = 0; j < outerEdgeSize; j++) {
+        // right
+        outOfBunds(i + j);
+        // left edge
+        outOfBunds(i + j + gridRowLength - 3);
+      }
+    }
+    function outOfBunds(e) {
+      gridDivArray[e].classList.add("outOffBounds");
+      outOfBoundsTileArray.push(gridDivArray[e]);
     }
   }
-  
-  
+
   /////////////////////////////////////////////////////////
   //NewShape/FirstShape
   /////////////////////////////////////////////////////////
+  function space() {
+    //console.log(outOfBoundsTileArray);
+    
+    let outOfBoundArray = []
+    outOfBoundsTileArray.forEach(element => {
+      outOfBoundArray.push(parseInt(element.id))
+    });
+
+
+
+    console.log(objectGridLocationCalc());
+    console.log(outOfBoundsTileArray);
+    console.log(outOfBoundArray);
+
+    let objectOutOfBounds = objectGridLocationCalc().filter((tile) =>
+    outOfBoundArray.includes(tile)
+    );
+
+    console.log(objectOutOfBounds);
+
+    newShape();
+    ////////
+    ///////////////////
+    //////////////////////
+    //if current object is on tile of OutofBound do not continue
+    //////
+    //////
+  }
+
   function newShape(startShape = false) {
-    //if in outer ring
-    
-    
     if (startShape === true) {
       nextObject = tetrominoArray[selectRandomObject()];
       //nextObject = singleShape;
     } else {
       let activeObjectArray = objectGridLocationCalc();
       activeObjectArray.forEach((tileNum) => {
-      gridDivArray[tileNum].classList.add("taken");
-      takeTilesArray.push(gridDivArray[tileNum]);
+        gridDivArray[tileNum].classList.add("taken");
+        takeTilesArray.push(gridDivArray[tileNum]);
       });
     }
+
     currentObject = nextObject;
     nextObject = tetrominoArray[selectRandomObject()];
     currentObject.firstTile = gridRowLength;
@@ -184,7 +217,7 @@ function moving() {
       } else if (e.key === "r" || e.key === "R") {
         move("rotation");
       } else if (e.key === " ") {
-        newShape();
+        space();
       }
     }
     document.addEventListener("keydown", control);
