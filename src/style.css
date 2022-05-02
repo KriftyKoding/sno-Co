@@ -6,6 +6,9 @@
     background-color: green;
 }
 
+.outOffBounds {
+    background-color: black;
+}
 .red {
     background-color: red;
 }

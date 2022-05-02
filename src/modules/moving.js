@@ -1,15 +1,16 @@
 function moving() {
   const domBody = document.body;
-  const gridRowLength = 15;
-  const gridColumnLength = 10;
+  const gridRowLength = 20;
+  const gridColumnLength = 22;
   const gridDivArray = [];
   const tetrominoArray = [];
   const takeTilesArray = [];
   let currentObject;
   let nextObject;
-
+  
   shapeCreation();
   createGrid();
+  outerEdge();
   newShape(true);
   movementControlFunction();
 
@@ -93,19 +94,46 @@ function moving() {
   //  } else {
   //  }
   //}
-
+  /////////////////////////////////////////////////////////
+  //out of bounds area
+  //////////
+  function outerEdge () {
+    let outerEdgeSize = 3
+    for (let i = 0; i < gridRowLength * outerEdgeSize; i++) { // shows 0, then 1, then 2
+      //top rows
+      gridDivArray[i].classList.add("outOffBounds");
+      ////bottom rows
+      const outOfBoundBottom = gridColumnLength* gridRowLength - gridRowLength* 3 + i;
+      gridDivArray[outOfBoundBottom].classList.add("outOffBounds");
+    }
+    
+    for (let i = 0; i < (gridColumnLength* gridRowLength - gridColumnLength + 4); i += gridRowLength) { // shows 0, then 1, then 2
+      console.log("start");
+      for (let j = 0; j < outerEdgeSize; j++) { // shows 0, then 1, then 2
+        const outOfBoundRight = (i+j);
+        const outOfBoundLeft = (i+j+gridRowLength-3);
+        gridDivArray[outOfBoundRight].classList.add("outOffBounds");
+        gridDivArray[outOfBoundLeft].classList.add("outOffBounds");
+      }   
+    }
+  }
+  
+  
   /////////////////////////////////////////////////////////
   //NewShape/FirstShape
   /////////////////////////////////////////////////////////
   function newShape(startShape = false) {
+    //if in outer ring
+    
+    
     if (startShape === true) {
       nextObject = tetrominoArray[selectRandomObject()];
       //nextObject = singleShape;
     } else {
       let activeObjectArray = objectGridLocationCalc();
       activeObjectArray.forEach((tileNum) => {
-        gridDivArray[tileNum].classList.add("taken");
-        takeTilesArray.push(gridDivArray[tileNum]);
+      gridDivArray[tileNum].classList.add("taken");
+      takeTilesArray.push(gridDivArray[tileNum]);
       });
     }
     currentObject = nextObject;
