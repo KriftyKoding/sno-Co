@@ -11,24 +11,34 @@ function racing() {
   };
   driveBox = {
     x: 100,
-    y: 100,
-    width: 200,
-    height: 200,
+    y: 0,
+    width: 300,
+    height: canvasObject.height,
     color: "brown",
   };
   driveBoxOuter = {
     x: 50,
-    y: 50,
+    y: 0,
     width: 400,
-    height: 400,
+    height: canvasObject.height,
     color: "black",
   };
 
   let ctx = canvas.getContext("2d");
+  ctx.fillStyle = driveBoxOuter.color;
+  ctx.fillRect(
+    driveBoxOuter.x,
+    driveBoxOuter.y,
+    driveBoxOuter.width,
+    driveBoxOuter.height
+  );
+  ctx.fillStyle = driveBox.color;
+  ctx.fillRect(driveBox.x, driveBox.y, driveBox.width, driveBox.height);
+ 
   //player one
   p1 = {
-    x: 500,
-    y: 500,
+    x: (driveBox.x + driveBox.width)/2,
+    y: driveBox.height - driveBox.height * .1,
     width: 10,
     height: 10,
   };
@@ -76,6 +86,7 @@ function racing() {
   function movementCheck(incremnet, axis) {
     //in drive box
     let driveBoxColor = "out";
+    
     if (
       p1.x >= driveBoxOuter.x &&
       p1.x + p1.width <= driveBoxOuter.x + driveBoxOuter.width &&
@@ -96,8 +107,6 @@ function racing() {
       }
     }
 
-
-    
 
     switch (axis) {
       case "x":
@@ -129,15 +138,6 @@ function racing() {
     }
   }
   document.addEventListener("keydown", controls);
-  ctx.fillStyle = driveBoxOuter.color;
-  ctx.fillRect(
-    driveBoxOuter.x,
-    driveBoxOuter.y,
-    driveBoxOuter.width,
-    driveBoxOuter.height
-  );
-  ctx.fillStyle = driveBox.color;
-  ctx.fillRect(driveBox.x, driveBox.y, driveBox.width, driveBox.height);
   //  ctx.fillStyle = "#FF0000";
   //  ctx.fillRect(100, 100, 100, 100);
 }
