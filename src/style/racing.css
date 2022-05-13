@@ -1,0 +1,10 @@
+body {
+    margin:0px;
+    text-align: center;
+    background-color: aqua;
+}
+
+canvas {
+    background-color: pink;
+    /*text-align: center;*/
+}
