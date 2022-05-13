@@ -10,11 +10,20 @@ function racing() {
     height: (canvas.height = window.innerHeight - 10),
   };
   driveBox = {
-    x: 50,
-    y: 50,
+    x: 100,
+    y: 100,
     width: 200,
     height: 200,
+    color: "brown",
   };
+  driveBoxOuter = {
+    x: 50,
+    y: 50,
+    width: 400,
+    height: 400,
+    color: "black",
+  };
+
   let ctx = canvas.getContext("2d");
   //player one
   p1 = {
@@ -26,17 +35,16 @@ function racing() {
   let movementIncremnet = 10;
   playerChange();
 
-  function playerChange(xChange = 0, yChange = 0, drivebox) {
+  function playerChange(xChange = 0, yChange = 0, driveBoxColor) {
     //   console.log('start');
-    switch (drivebox) {
-      case "in":
-        ctx.fillStyle = "black";
-        ctx.fillRect(p1.x, p1.y, p1.width, p1.height);
-        break;
+    switch (driveBoxColor) {
       case "out":
         //console.log("clear");
         ctx.clearRect(p1.x, p1.y, p1.width, p1.height);
         break;
+      default:
+        ctx.fillStyle = driveBoxColor;
+        ctx.fillRect(p1.x, p1.y, p1.width, p1.height);
     }
     //ctx.fillRect(p1.x, p1.y, p1.width, p1.height);
     p1.x += xChange;
@@ -67,39 +75,53 @@ function racing() {
 
   function movementCheck(incremnet, axis) {
     //in drive box
-    let black = "out"
+    let driveBoxColor = "out";
     if (
-       p1.x >= driveBox.x &&
-      p1.x + p1.width <= driveBox.x + driveBox.width &&
-      p1.y + p1.height <= driveBox.y + driveBox.height &&
-      p1.y >= driveBox.y
+      p1.x >= driveBoxOuter.x &&
+      p1.x + p1.width <= driveBoxOuter.x + driveBoxOuter.width &&
+      p1.y + p1.height <= driveBoxOuter.y + driveBoxOuter.height &&
+      p1.y >= driveBoxOuter.y
+    ) {
+      if (
+        p1.x >= driveBox.x &&
+        p1.x + p1.width <= driveBox.x + driveBox.width &&
+        p1.y + p1.height <= driveBox.y + driveBox.height &&
+        p1.y >= driveBox.y
       ) {
-          black = "in"
-          console.log("increase speed");
+        driveBoxColor = driveBox.color;
+        console.log("increase speed");
+      } else {
+        driveBoxColor = driveBoxOuter.color;
+        console.log("slower increase speed");
+      }
     }
+
+
     
+
     switch (axis) {
       case "x":
         //  console.log("x");
-        //edge
         if (
+          //edge check
           incremnet + p1.x >= canvasObject.width - p1.width ||
           incremnet + p1.x <= 0
         ) {
           console.log("wallHit");
         } else {
-            playerChange(incremnet, 0, black);
+          playerChange(incremnet, 0, driveBoxColor);
         }
         break;
       case "y":
         //  console.log("y");
         if (
+          //edge check
           incremnet + p1.y >= canvasObject.height - p1.height ||
           incremnet + p1.y <= 0
         ) {
           console.log("wallHit");
         } else {
-            playerChange(0, incremnet, black);
+          playerChange(0, incremnet, driveBoxColor);
         }
         break;
       default:
@@ -107,7 +129,14 @@ function racing() {
     }
   }
   document.addEventListener("keydown", controls);
-  ctx.fillStyle = "black";
+  ctx.fillStyle = driveBoxOuter.color;
+  ctx.fillRect(
+    driveBoxOuter.x,
+    driveBoxOuter.y,
+    driveBoxOuter.width,
+    driveBoxOuter.height
+  );
+  ctx.fillStyle = driveBox.color;
   ctx.fillRect(driveBox.x, driveBox.y, driveBox.width, driveBox.height);
   //  ctx.fillStyle = "#FF0000";
   //  ctx.fillRect(100, 100, 100, 100);
